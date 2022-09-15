@@ -1,3 +1,5 @@
+import module from 'module';
+
 module.exports = {
     "env": {
         "browser": true,
