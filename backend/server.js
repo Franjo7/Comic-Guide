@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import path from 'path';
 import productRouter from './routers/productRouter.js';
 import userRouter from './routers/userRouter.js';
 import orderRouter from './routers/orderRouter.js';
@@ -12,8 +13,6 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-
 
 const url = `mongodb+srv://Franjo:ttQ6sxOupugxvh4d@cluster0.vgyawwz.mongodb.net/ComicGuide?retryWrites=true&w=majority`;
 
@@ -34,19 +33,23 @@ mongoose.connect(url,connectionParams)
 
 
 
-
-
-
-
 app.use('/api/users', userRouter);
 app.use('/api/products', productRouter);
 app.use('/api/orders', orderRouter);
 
+const __dirname = path.resolve();
+app.use('/products', express.static(path.join(__dirname, '/products')));
 
 
-app.get('/', (req, res) => {
-  res.send('Server is ready');
-});
+
+app.use(express.static(path.join(__dirname, '/frontend/build')));
+app.get('*', (req, res) =>
+  res.sendFile(path.join(__dirname, '/frontend/build/index.html'))
+);
+// app.get('/', (req, res) => {
+//   res.send('Server is ready');
+// })
+
 
 
 
